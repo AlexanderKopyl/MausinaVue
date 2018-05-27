@@ -31,17 +31,23 @@
             <v-btn
               color="blue-grey"
               class="warning"
-              @click.native="loader = 'loading3'"
+              @click = "triggerUpload"
             >
               Upload
               <v-icon right dark>cloud_upload</v-icon>
             </v-btn>
-
+            <input
+              ref="fileInput"
+              type="file"
+              style="display: none"
+              accept="image/*"
+              @change = "onFileChange"
+            >
           </v-flex>
         </v-layout>
         <v-layout>
           <v-flex xs12 sm6 offset-sm3>
-            <img src="" height="150" alt="">
+            <img :src="imgSrc" height="150" alt="" v-if=" imgSrc">
 
           </v-flex>
         </v-layout>
@@ -64,7 +70,7 @@
               :loading = "loading"
               class="success"
               @click="CreateAD"
-              :disabled="!valid || loading"
+              :disabled="!valid || !image || loading"
             >
               CreateAD
             </v-btn>
@@ -83,7 +89,9 @@
         title: '',
         description: '',
         promo: false,
-        valid: false
+        valid: false,
+        image: null,
+        imgSrc: ''
       }
     },
     computed: {
@@ -93,12 +101,12 @@
     },
     methods: {
       CreateAD () {
-        if (this.$refs.form.validate()) {
+        if (this.$refs.form.validate() && this.image) {
           const ad = {
             title: this.title,
             description: this.description,
             promo: this.promo,
-            imgSrc: 'https://ru-wotp.wgcdn.co/dcont/fb/image/progetto_m35_mod_46_1920x1080_noc_ru.jpg'
+            image: this.image
           }
 
           this.$store.dispatch('createAd', ad)
@@ -107,6 +115,19 @@
             })
             .catch(() => {})
         }
+      },
+      triggerUpload () {
+        this.$refs.fileInput.click()
+      },
+      onFileChange (event) {
+        const file = event.target.files[0]
+
+        const reader = new FileReader()
+        reader.onload = e => {
+          this.imgSrc = reader.result
+        }
+        reader.readAsDataURL(file)
+        this.image = file
       }
     }
   }
