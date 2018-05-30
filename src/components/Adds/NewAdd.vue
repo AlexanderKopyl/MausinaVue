@@ -3,78 +3,64 @@
     <v-layout row>
       <v-flex xs12 sm6 offset-sm3>
         <h1 class="text--secondary mb-3">Create new ad</h1>
-        <v-form ref="form" v-model="valid" validation class="mb-3">
+        <v-form v-model="valid" ref="form" validation class="mb-3">
           <v-text-field
             name="title"
-            label="AD title"
+            label="Ad title"
+            type="text"
             v-model="title"
-            type="text"
-            :rules="[v => !!v || 'Title is required']"
             required
-          >
-
-          </v-text-field>
+            :rules="[v => !!v || 'Title is required']"
+          ></v-text-field>
           <v-text-field
-            id="description"
             name="description"
-            v-model="description"
-            label="AD description"
-            multi-line
+            label="Ad description"
             type="text"
+            v-model="description"
+            multi-line
             :rules="[v => !!v || 'Description is required']"
-          >
-          </v-text-field>
+          ></v-text-field>
         </v-form>
-        <v-layout class="mb-3">
+        <v-layout row class="mb-3">
           <v-flex xs12>
-
-            <v-btn
-              color="blue-grey"
-              class="warning"
-              @click = "triggerUpload"
-            >
+            <v-btn class="warning" @click="triggerUpload">
               Upload
               <v-icon right dark>cloud_upload</v-icon>
             </v-btn>
             <input
               ref="fileInput"
               type="file"
-              style="display: none"
+              style="display: none;"
               accept="image/*"
-              @change = "onFileChange"
+              @change="onFileChange"
             >
           </v-flex>
         </v-layout>
-        <v-layout>
-          <v-flex xs12 sm6 offset-sm3>
-            <img :src="imgSrc" height="150" alt="" v-if=" imgSrc">
-
+        <v-layout row>
+          <v-flex xs12>
+            <img :src="imgSrc" height="100" v-if="imgSrc">
           </v-flex>
         </v-layout>
-        <v-layout>
+        <v-layout row>
           <v-flex xs12>
             <v-switch
-              label="Ad to promo"
+              label="Add to promo?"
               v-model="promo"
               color="primary"
-            >
-
-            </v-switch>
-
+            ></v-switch>
           </v-flex>
         </v-layout>
-        <v-layout>
-          <v-flex xs12 sm6 offset-sm3>
+        <v-layout row>
+          <v-flex xs12>
             <v-spacer></v-spacer>
             <v-btn
-              :loading = "loading"
-              class="success"
-              @click="CreateAD"
+              :loading="loading"
               :disabled="!valid || !image || loading"
+              class="success"
+              @click="createAd"
             >
-              CreateAD
+              Create ad
             </v-btn>
-
           </v-flex>
         </v-layout>
       </v-flex>
@@ -100,7 +86,7 @@
       }
     },
     methods: {
-      CreateAD () {
+      createAd () {
         if (this.$refs.form.validate() && this.image) {
           const ad = {
             title: this.title,
@@ -132,7 +118,3 @@
     }
   }
 </script>
-
-<style scoped>
-
-</style>
